@@ -9,24 +9,26 @@ from view_transformer import ViewTransformer
 from speed_and_distance_estimator import SpeedAndDistance_Estimator
 
 
-def main():
+def analyze_video(input_path, output_path, model_path, use_stubs=False):
     # Read Video
-    video_frames = read_video('input_videos/08fd33_4.mp4')
+    video_frames = read_video(input_path)
+    if not video_frames:
+        raise ValueError("The uploaded video could not be read.")
 
     # Initialize Tracker
-    tracker = Tracker('models/best.pt')
+    tracker = Tracker(model_path)
 
     tracks = tracker.get_object_tracks(video_frames,
-                                       read_from_stub=True,
-                                       stub_path='stubs/track_stubs.pkl')
+                                       read_from_stub=use_stubs,
+                                       stub_path='stubs/track_stubs.pkl' if use_stubs else None)
     # Get object positions 
     tracker.add_position_to_tracks(tracks)
 
     # camera movement estimator
     camera_movement_estimator = CameraMovementEstimator(video_frames[0])
     camera_movement_per_frame = camera_movement_estimator.get_camera_movement(video_frames,
-                                                                                read_from_stub=True,
-                                                                                stub_path='stubs/camera_movement_stub.pkl')
+                                                                                read_from_stub=use_stubs,
+                                                                                stub_path='stubs/camera_movement_stub.pkl' if use_stubs else None)
     camera_movement_estimator.add_adjust_positions_to_tracks(tracks,camera_movement_per_frame)
 
 
@@ -66,7 +68,7 @@ def main():
             tracks['players'][frame_num][assigned_player]['has_ball'] = True
             team_ball_control.append(tracks['players'][frame_num][assigned_player]['team'])
         else:
-            team_ball_control.append(team_ball_control[-1])
+            team_ball_control.append(team_ball_control[-1] if team_ball_control else 0)
     team_ball_control= np.array(team_ball_control)
 
 
@@ -81,7 +83,16 @@ def main():
     speed_and_distance_estimator.draw_speed_and_distance(output_video_frames,tracks)
 
     # Save video
-    save_video(output_video_frames, 'output_videos/output_video.avi')
+    save_video(output_video_frames, output_path)
+
+
+def main():
+    analyze_video(
+        input_path='input_videos/08fd33_4.mp4',
+        output_path='output_videos/output_video.avi',
+        model_path='models/best.pt',
+        use_stubs=True,
+    )
 
 if __name__ == '__main__':
     main()

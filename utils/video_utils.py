@@ -11,7 +11,12 @@ def read_video(video_path):
     return frames
 
 def save_video(ouput_video_frames,output_video_path):
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    if not ouput_video_frames:
+        raise ValueError("Cannot save an empty video.")
+
+    extension = output_video_path.lower().rsplit(".", 1)[-1]
+    codec = "mp4v" if extension == "mp4" else "XVID"
+    fourcc = cv2.VideoWriter_fourcc(*codec)
     out = cv2.VideoWriter(output_video_path, fourcc, 24, (ouput_video_frames[0].shape[1], ouput_video_frames[0].shape[0]))
     for frame in ouput_video_frames:
         out.write(frame)

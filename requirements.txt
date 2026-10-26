@@ -1,4 +1,5 @@
-streamlit
+gradio
+huggingface_hub
 ultralytics
 supervision
 opencv-python-headless
