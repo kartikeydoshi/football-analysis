@@ -3,6 +3,7 @@ import tempfile
 from functools import lru_cache
 
 import gradio as gr
+import spaces
 from huggingface_hub import hf_hub_download
 
 from main import analyze_video
@@ -15,6 +16,7 @@ def get_model_path():
         filename="best.pt",
     )
 
+@spaces.GPU
 def process_video(video_path):
     if not video_path:
         raise gr.Error("Please upload a video.")
