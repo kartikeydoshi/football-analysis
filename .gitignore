@@ -1,2 +1,5 @@
-*__pycahce__*
+*__pycache__*
 *.pyc
+*.DS_STORE
+training
+models
