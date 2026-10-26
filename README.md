@@ -1,4 +1,9 @@
-# Football Analysis Project
+---
+title: "Football Analysis"
+app_file: app.py
+sdk: gradio
+---
+
 
 Detects players, referees, balls using YOLO. Also utilizes K-means and segmentation to decipher the different teams.
 
