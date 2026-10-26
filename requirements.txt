@@ -1,7 +1,7 @@
 gradio
 huggingface_hub
 ultralytics
-supervision
+supervision==0.26.1
 opencv-python-headless
 numpy
 pandas
