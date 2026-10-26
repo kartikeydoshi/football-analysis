@@ -38,7 +38,6 @@ demo = gr.Interface(
     fn=process_video,
     inputs=gr.Video(
         sources=["upload"],
-        type="filepath",
         label="Upload football video",
     ),
     outputs=gr.Video(label="Analyzed video"),
