@@ -11,7 +11,7 @@ from main import analyze_video
 @lru_cache(maxsize=1)
 def get_model_path():
     return hf_hub_download(
-        repo_id=os.getenv("MODEL_REPO_ID", "kartikeydoshi/football_yolov5"),
+        repo_id=os.getenv("MODEL_REPO_ID"),
         filename="best.pt",
     )
 
