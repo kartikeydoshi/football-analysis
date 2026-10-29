@@ -9,6 +9,13 @@ from huggingface_hub import hf_hub_download
 from main import analyze_video
 
 
+SAMPLE_VIDEO_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "input_videos",
+    "08fd33_4.mp4",
+)
+
+
 @lru_cache(maxsize=1)
 def get_model_path():
     return hf_hub_download(
@@ -36,19 +43,31 @@ def process_video(video_path):
     return output_path
 
 
-demo = gr.Interface(
-    fn=process_video,
-    inputs=gr.Video(
-        sources=["upload"],
-        label="Upload football video",
-    ),
-    outputs=gr.Video(label="Analyzed video"),
-    title="Football Video Analysis",
-    description=(
+with gr.Blocks(title="Football Video Analysis") as demo:
+    gr.Markdown(
+        "# Football Video Analysis\n"
         "YOLO player, referee, and ball tracking with team assignment, "
         "ball possession, camera-motion compensation, speed, and distance estimation."
-    ),
-)
+    )
+
+    video_input = gr.Video(
+        sources=["upload"],
+        label="Upload football video",
+    )
+    with gr.Row():
+        add_sample_button = gr.Button("Add sample")
+        analyze_button = gr.Button("Analyze video", variant="primary")
+    analyzed_video = gr.Video(label="Analyzed video")
+
+    add_sample_button.click(
+        fn=lambda: SAMPLE_VIDEO_PATH,
+        outputs=video_input,
+    )
+    analyze_button.click(
+        fn=process_video,
+        inputs=video_input,
+        outputs=analyzed_video,
+    )
 
 if __name__ == "__main__":
     demo.launch()
